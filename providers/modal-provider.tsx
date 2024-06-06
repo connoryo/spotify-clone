@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import AuthModal from "@/components/auth-modal";
+import UploadModal from "@/components/upload-modal";
 
 const ModalProvider = () => {
     // Don't render modals on serverside; use this workaround to avoid hydration errors
@@ -19,6 +20,7 @@ const ModalProvider = () => {
     return (
         <>
             <AuthModal />
+            <UploadModal />
         </>
     )
 }
