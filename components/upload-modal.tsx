@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import useUploadModal from "@/hooks/use-upload-modal";
 import { useUser } from "@/hooks/use-user";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { song_file_formats } from "@/types";
 
 import Modal from "./modal";
 import Input from "./input";
@@ -69,7 +70,7 @@ const UploadModal = () => {
 
             if (songError) {
                 setIsLoading(false);
-                return toast.error("Song upload failed.")
+                return toast.error(`Song upload failed: ${songError.message}`)
             }
 
             // Upload image
@@ -86,7 +87,7 @@ const UploadModal = () => {
 
             if (imageError) {
                 setIsLoading(false);
-                return toast.error("Image upload failed.")
+                return toast.error(`Image upload failed: ${imageError.message}`)
             }
 
             const {
@@ -103,7 +104,7 @@ const UploadModal = () => {
 
             if (supabaseError) {
                 setIsLoading(false);
-                return toast.error(supabaseError.message);
+                return toast.error(`Failed to add song: ${supabaseError.message}`)
             }
 
             router.refresh();
@@ -121,7 +122,7 @@ const UploadModal = () => {
     return (
         <Modal
             title="Add a song"
-            description="Upload an MP3 file"
+            description="Upload a song file"
             isOpen={uploadModal.isOpen}
             onChange={onChange}
         >
@@ -149,7 +150,7 @@ const UploadModal = () => {
                         id="song"
                         type="file"
                         disabled={isLoading}
-                        accept=".mp3"
+                        accept={song_file_formats.map(format => `.${format}`).join(',')}
                         {...register('song', { required: true })}
                     />
                 </div>
@@ -166,7 +167,7 @@ const UploadModal = () => {
                     />
                 </div>
                 <Button disabled={isLoading} type="submit">
-                    Create
+                    {isLoading ? "Uploading..." : "Create"}
                 </Button>
             </form>
         </Modal>

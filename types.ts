@@ -1,5 +1,9 @@
 import Stripe from "stripe";
 
+export const song_file_formats = [
+    "mp3", "flac", "wav"
+]
+
 export interface Song {
     id: string;
     user_id: string;
