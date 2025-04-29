@@ -24,21 +24,16 @@ const PlayerContent: React.FC<PlayerContentProps> = ({
 }) => {
     const player = usePlayer();
 
-    const [volume, setVolume] = useState(1);
     const [previousVolume, setPreviousVolume] = useState(1);
-
     const [isPlaying, setIsPlaying] = useState(true);
-
     const [currentTime, setCurrentTime] = useState(0);
     const [currentScrubTime, setCurrentScrubTime] = useState(0);
-
     const [duration, setDuration] = useState(0);
     const [isScrubbing, setIsScrubbing] = useState(false);
-
     const [displayTimeRemaining, setDisplayTimeRemaining] = useState(false);
 
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;
-    const VolumeIcon = volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
+    const VolumeIcon = player.volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
 
     const onPlayNext = () => {
         if (player.ids.length === 0) {
@@ -82,7 +77,7 @@ const PlayerContent: React.FC<PlayerContentProps> = ({
     const [play, { pause, sound }] = useSound(
         songUrl,
         {
-            volume: volume,
+            volume: player.volume,
             onplay: () => setIsPlaying(true),
             onend: () => {
                 setIsPlaying(false);
@@ -125,11 +120,11 @@ const PlayerContent: React.FC<PlayerContentProps> = ({
     };
 
     const toggleMute = () => {
-        if (volume === 0) {
-            setVolume(previousVolume);
+        if (player.volume === 0) {
+            player.setVolume(previousVolume);
         } else {
-            setPreviousVolume(volume)
-            setVolume(0);
+            setPreviousVolume(player.volume)
+            player.setVolume(0);
         }
     };
 
@@ -234,15 +229,23 @@ const PlayerContent: React.FC<PlayerContentProps> = ({
             </div>
 
             <div className="hidden md:flex w-full justify-end pr-2">
-                <div className="flex items-center gap-x-2 w-[120px]">
+                <div 
+                    className="flex items-center gap-x-2 w-[120px]"
+                    onWheel={(e) => {
+                        e.preventDefault();
+                        const delta = e.deltaY > 0 ? -0.05 : 0.05;
+                        const newVolume = Math.min(1, Math.max(0, player.volume + delta));
+                        player.setVolume(newVolume);
+                    }}
+                >
                     <VolumeIcon
                         onClick={toggleMute}
                         className="cursor-pointer"
                         size={34}
                     />
                     <Slider
-                        value={volume}
-                        onChange={(value) => setVolume(value)}
+                        value={player.volume}
+                        onChange={(value) => player.setVolume(value)}
                     />
                 </div>
             </div>
