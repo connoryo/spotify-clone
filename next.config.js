@@ -4,7 +4,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'zccidwnpkqjijxceuicy.supabase.co',
+                hostname: process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/^.*?:\/\//, ''), // remove up through the first :// from the URL
                 port: '',
             }
         ]
